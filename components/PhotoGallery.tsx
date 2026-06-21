@@ -11,31 +11,52 @@ interface Card {
   desc: string
 }
 
+
 const INITIAL_CARDS: Card[] = [
   {
     id: 1,
-    src: '/images/couple-1.png',
-    title: 'Eyes Met, Hearts Connected',
-    desc: 'The beginning of our beautiful story.'
+    src: '/images/prashant-th.jpeg',
+    // title: 'Eyes Met, Hearts Connected',
+    // desc: 'The beginning of our beautiful story.'
+    title: '',
+    desc: 'Hey, I\'m Prashant'
   },
   {
     id: 2,
-    src: '/images/couple-2.png',
-    title: 'Hand in Hand',
-    desc: 'A lifetime promise sealed with a ring.'
+    src: '/images/mitali-ai.jpeg',
+    // title: 'Hand in Hand',
+    // desc: 'A lifetime promise sealed with a ring.'
+    title: '',
+    desc: 'Hey, I\'m Mitali'
   },
+  // {
+  //   id: 3,
+  //   src: '/images/couple-3.png',
+  //   title: 'Gilded Moments',
+  //   desc: 'Walking together into a golden future.'
+  // },
+  // {
+  //   id: 4,
+  //   src: '/images/couple-4.png',
+  //   title: 'The Promise of Forever',
+  //   desc: 'Our hearts beat in harmony, now and always.'
+  // }
   {
     id: 3,
-    src: '/images/couple-3.png',
-    title: 'Gilded Moments',
-    desc: 'Walking together into a golden future.'
+    src: '/images/prashant-th.jpeg',
+    // title: 'Eyes Met, Hearts Connected',
+    // desc: 'The beginning of our beautiful story.'
+    title: '',
+    desc: 'Hey, I\'m Prashant'
   },
   {
     id: 4,
-    src: '/images/couple-4.png',
-    title: 'The Promise of Forever',
-    desc: 'Our hearts beat in harmony, now and always.'
-  }
+    src: '/images/mitali-ai.jpeg',
+    // title: 'Hand in Hand',
+    // desc: 'A lifetime promise sealed with a ring.'
+    title: '',
+    desc: 'Hey, I\'m Mitali'
+  },
 ]
 
 export default function PhotoGallery() {
@@ -70,7 +91,7 @@ export default function PhotoGallery() {
   }
 
   return (
-    <section 
+    <section
       id="gallery"
       className="relative min-h-[90vh] w-full flex flex-col items-center justify-center bg-luxury py-20 px-6 overflow-hidden border-b border-gold/10"
     >
@@ -87,7 +108,7 @@ export default function PhotoGallery() {
       </div>
 
       {/* 3D Stack Container */}
-      <div 
+      <div
         className="relative w-[300px] h-[400px] md:w-[380px] md:h-[500px] flex items-center justify-center cursor-grab active:cursor-grabbing"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -95,7 +116,7 @@ export default function PhotoGallery() {
         <AnimatePresence mode="popLayout">
           {cards.map((card, index) => {
             const isTop = index === 0
-            
+
             // 3D positioning layers
             // Fanning out style when hovered on desktop to show there are cards behind
             const fanOffset = isHovered ? (index * 12) : 0
@@ -133,7 +154,7 @@ export default function PhotoGallery() {
                   />
                   {/* Subtle vignette layer */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                  
+
                   {/* Caption on the image itself */}
                   <div className="absolute bottom-4 left-4 right-4 z-20 text-[#FFFDF7]">
                     <h3 className="text-xl md:text-2xl font-subheading font-medium tracking-wide">
@@ -173,9 +194,8 @@ export default function PhotoGallery() {
                   return copy
                 })
               }}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                isActive ? 'w-6 bg-gold' : 'w-2 bg-gold/30 hover:bg-gold/65'
-              } cursor-pointer`}
+              className={`h-2 rounded-full transition-all duration-300 ${isActive ? 'w-6 bg-gold' : 'w-2 bg-gold/30 hover:bg-gold/65'
+                } cursor-pointer`}
             />
           )
         })}

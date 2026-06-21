@@ -20,7 +20,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
     // Stage 2: Automatically complete loading after 3.2s
     const completeTimer = setTimeout(() => {
       handleComplete()
-    }, 3500)
+    }, 4000)
 
     return () => {
       clearTimeout(textTimer)
@@ -32,7 +32,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
     setIsVisible(false)
     setTimeout(() => {
       onComplete()
-    }, 800) // Wait for exit animation to finish
+    }, 100) // Wait for exit animation to finish
   }
 
   // Mandala drawing animation settings
@@ -53,9 +53,9 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
       {isVisible && (
         <motion.div
           initial={{ y: 0 }}
-          exit={{ 
+          exit={{
             y: '-100%',
-            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } 
+            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] }
           }}
           className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-[#3d0813] to-maroon text-[#FFFDF7]"
         >
@@ -73,27 +73,27 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
           {/* Luxury Mandala SVG Container */}
           <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
             {/* Soft gold rotating background glow */}
-            <motion.div 
+            <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0 rounded-full opacity-10 bg-radial from-gold-soft via-transparent to-transparent blur-xl"
             />
-            
-            <svg 
-              viewBox="0 0 100 100" 
+
+            <svg
+              viewBox="0 0 100 100"
               className="w-full h-full text-gold stroke-current fill-none stroke-[0.4]"
             >
               {/* Outer Ring */}
-              <motion.circle 
+              <motion.circle
                 cx="50" cy="50" r="48"
                 variants={mandalaPathVariants}
                 initial="hidden"
                 animate="visible"
               />
-              
+
               {/* Outer Decorative Dots */}
-              <motion.circle 
-                cx="50" cy="50" r="44" 
+              <motion.circle
+                cx="50" cy="50" r="44"
                 strokeDasharray="1 3"
                 variants={mandalaPathVariants}
                 initial="hidden"
@@ -101,7 +101,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
               />
 
               {/* Symmetric Petals */}
-              <motion.path 
+              <motion.path
                 d="M50 6 C43 25 35 25 50 45 C65 25 57 25 50 6 Z
                    M50 94 C43 75 35 75 50 55 C65 75 57 75 50 94 Z
                    M6 50 C25 43 25 35 45 50 C25 65 25 57 6 50 Z
@@ -110,9 +110,9 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
                 initial="hidden"
                 animate="visible"
               />
-              
+
               {/* Diagonal Petals */}
-              <motion.path 
+              <motion.path
                 d="M19 19 C33 30 30 37 46 46 C30 33 37 30 19 19 Z
                    M81 81 C67 70 70 63 54 54 C70 67 63 70 81 81 Z
                    M19 81 C33 70 30 63 46 54 C30 67 37 70 19 81 Z
@@ -123,15 +123,15 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
               />
 
               {/* Middle Circle */}
-              <motion.circle 
+              <motion.circle
                 cx="50" cy="50" r="22"
                 variants={mandalaPathVariants}
                 initial="hidden"
                 animate="visible"
               />
-              
+
               {/* Inner Flower */}
-              <motion.path 
+              <motion.path
                 d="M50 35 C47 43 43 47 50 50 C57 47 53 43 50 35 Z
                    M50 65 C47 57 43 53 50 50 C57 53 53 57 50 65 Z
                    M35 50 C43 47 47 43 50 50 C47 57 43 53 35 50 Z
@@ -140,10 +140,10 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
                 initial="hidden"
                 animate="visible"
               />
-              
+
               {/* Center Core dot */}
-              <motion.circle 
-                cx="50" cy="50" r="3" 
+              <motion.circle
+                cx="50" cy="50" r="3"
                 className="fill-gold"
                 variants={mandalaPathVariants}
                 initial="hidden"
@@ -165,7 +165,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
                   className="flex flex-col items-center"
                 >
                   {/* Couple Names */}
-                  <motion.h1 
+                  <motion.h1
                     variants={{
                       hidden: { opacity: 0, y: 15 },
                       visible: { opacity: 1, y: 0 }
