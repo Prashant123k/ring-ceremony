@@ -7,79 +7,141 @@ import Image from 'next/image'
 export default function GrandFinale() {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Parallax scroll controls
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"]
+    offset: ['start end', 'end start']
   })
 
-  // background scales up slightly, overlays shift
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.2])
-  const textY = useTransform(scrollYProgress, [0, 1], ["0px", "-40px"])
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.08, 1.22])
+  const textY = useTransform(scrollYProgress, [0, 1], ['20px', '-40px'])
+  const textOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0.6])
 
   return (
-    <section 
+    <section
       id="finale"
       ref={containerRef}
-      className="relative h-[85vh] w-full overflow-hidden flex items-center justify-center bg-maroon"
+      className="relative overflow-hidden flex items-center justify-center"
+      style={{ height: 'min(90vh, 700px)' }}
     >
-      {/* Background Parallax Image */}
-      <motion.div 
+      {/* Parallax Background */}
+      <motion.div
         style={{ scale: bgScale }}
         className="absolute inset-0 w-full h-full"
       >
         <Image
           src="/images/couple-4.png"
-          alt="The Beginning of Forever"
-          fill
-          sizes="100vw"
+          alt="Prashant & Mitali — The Beginning of Forever"
+          fill sizes="100vw"
           className="object-cover object-center"
         />
-        {/* Dark Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-maroon via-maroon/40 to-transparent" />
-        <div className="absolute inset-0 bg-black/40" />
       </motion.div>
 
-      {/* Main Overlay Content */}
-      <motion.div 
-        style={{ y: textY }}
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 text-center px-4 max-w-2xl flex flex-col items-center select-none"
+      {/* Layered cinematic overlays */}
+      <div className="absolute inset-0 z-[1]">
+        <div className="absolute inset-0 bg-black/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2a0508]/95 via-[#3d0813]/40 to-transparent" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.6) 100%)'
+          }}
+        />
+      </div>
+
+      {/* Corner frames */}
+      <div className="absolute inset-5 md:inset-10 z-[2] pointer-events-none">
+        {(['tl', 'tr', 'bl', 'br'] as const).map(pos => (
+          <div
+            key={pos}
+            className={`absolute w-10 h-10 md:w-16 md:h-16 border-gold/30
+              ${pos === 'tl' ? 'top-0 left-0 border-t border-l' : ''}
+              ${pos === 'tr' ? 'top-0 right-0 border-t border-r' : ''}
+              ${pos === 'bl' ? 'bottom-0 left-0 border-b border-l' : ''}
+              ${pos === 'br' ? 'bottom-0 right-0 border-b border-r' : ''}
+            `}
+          />
+        ))}
+      </div>
+
+      {/* Content */}
+      <motion.div
+        style={{ y: textY, opacity: textOpacity }}
+        className="relative z-[3] text-center px-6 max-w-3xl flex flex-col items-center select-none"
       >
-        <span className="text-xs md:text-sm font-subheading uppercase tracking-[0.3em] text-gold-soft mb-2">
-          Save the Date
-        </span>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+          className="text-label font-subheading text-gold-soft/70 tracking-[0.3em] mb-8"
+        >
+          ✦ &nbsp; Save the Date &nbsp; ✦
+        </motion.p>
 
-        <h2 className="text-3xl md:text-6xl font-heading font-black tracking-widest text-[#FFFDF7] leading-tight">
-          THE BEGINNING OF FOREVER
-        </h2>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+          className="font-heading font-black text-cream tracking-widest leading-tight mb-6"
+          style={{
+            fontSize: 'clamp(2rem, 6vw, 4rem)',
+            textShadow: '0 4px 40px rgba(0,0,0,0.6)'
+          }}
+        >
+          THE BEGINNING<br />OF FOREVER
+        </motion.h2>
 
-        {/* Floating Heart */}
-        <div className="text-gold text-2xl my-4 animate-pulse">♥</div>
+        {/* Heart */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, ease: [0.34, 1.56, 0.64, 1], delay: 0.2 }}
+          className="mb-6"
+        >
+          <span className="text-gold text-3xl md:text-4xl animate-heartbeat block">♥</span>
+        </motion.div>
 
-        <h3 className="text-2xl md:text-4xl font-heading font-bold text-gold-soft tracking-wider">
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, delay: 0.25 }}
+          className="font-heading font-bold text-gold-soft tracking-[0.15em]"
+          style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)' }}
+        >
           PRASHANT & MITALI
-        </h3>
+        </motion.h3>
 
-        {/* Animated Gold Divider Line */}
-        <motion.div 
+        <motion.div
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, delay: 0.2, ease: "easeInOut" }}
-          className="w-32 h-[1px] bg-gold my-6 origin-center"
+          transition={{ duration: 1.2, delay: 0.4 }}
+          className="w-40 h-[1px] bg-gradient-to-r from-transparent via-gold/70 to-transparent my-8 origin-center"
         />
 
-        <p className="text-sm md:text-base font-subheading text-[#FFFDF7]/90 tracking-widest uppercase italic">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, delay: 0.5 }}
+          className="font-subheading italic text-cream/70 text-lg md:text-xl tracking-wider font-light"
+        >
           Thank you for being part of our journey.
-        </p>
-      </motion.div>
+        </motion.p>
 
-      {/* Elegant Outer Border overlay */}
-      <div className="absolute inset-4 md:inset-8 border border-gold/15 pointer-events-none z-20 rounded-sm" />
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, delay: 0.65 }}
+          className="font-subheading text-gold-soft/50 text-label tracking-[0.22em] mt-4"
+        >
+          19 JULY 2026 &nbsp;·&nbsp; SHAJAPUR, M.P.
+        </motion.p>
+      </motion.div>
     </section>
   )
 }

@@ -1,205 +1,218 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion'
 import Image from 'next/image'
 
 interface Card {
   id: number
   src: string
-  title: string
-  desc: string
+  name: string
+  subtitle: string
 }
 
-
-const INITIAL_CARDS: Card[] = [
-  {
-    id: 1,
-    src: '/images/prashant-th.jpeg',
-    // title: 'Eyes Met, Hearts Connected',
-    // desc: 'The beginning of our beautiful story.'
-    title: '',
-    desc: 'Hey, I\'m Prashant'
-  },
-  {
-    id: 2,
-    src: '/images/mitali-ai.jpeg',
-    // title: 'Hand in Hand',
-    // desc: 'A lifetime promise sealed with a ring.'
-    title: '',
-    desc: 'Hey, I\'m Mitali'
-  },
-  // {
-  //   id: 3,
-  //   src: '/images/couple-3.png',
-  //   title: 'Gilded Moments',
-  //   desc: 'Walking together into a golden future.'
-  // },
-  // {
-  //   id: 4,
-  //   src: '/images/couple-4.png',
-  //   title: 'The Promise of Forever',
-  //   desc: 'Our hearts beat in harmony, now and always.'
-  // }
-  {
-    id: 3,
-    src: '/images/prashant-th.jpeg',
-    // title: 'Eyes Met, Hearts Connected',
-    // desc: 'The beginning of our beautiful story.'
-    title: '',
-    desc: 'Hey, I\'m Prashant'
-  },
-  {
-    id: 4,
-    src: '/images/mitali-ai.jpeg',
-    // title: 'Hand in Hand',
-    // desc: 'A lifetime promise sealed with a ring.'
-    title: '',
-    desc: 'Hey, I\'m Mitali'
-  },
+const CARDS: Card[] = [
+  { id: 1, src: '/images/prashant-th.jpeg', name: 'Prashant', subtitle: 'The Groom' },
+  { id: 2, src: '/images/mitali-ai.jpeg', name: 'Mitali', subtitle: 'The Bride' },
+  { id: 3, src: '/images/prashant-th.jpeg', name: 'Prashant', subtitle: 'The Groom' },
+  { id: 4, src: '/images/mitali-ai.jpeg', name: 'Mitali', subtitle: 'The Bride' },
 ]
 
 export default function PhotoGallery() {
-  const [cards, setCards] = useState<Card[]>(INITIAL_CARDS)
-  const [isHovered, setIsHovered] = useState(false)
+  const [cards, setCards] = useState<Card[]>(CARDS)
+  const [direction, setDirection] = useState<'left' | 'right' | null>(null)
 
-  // Motion value for dragging the top card
   const dragX = useMotionValue(0)
-  const rotateTransform = useTransform(dragX, [-150, 150], [-15, 15])
-  const opacityTransform = useTransform(dragX, [-150, -100, 0, 100, 150], [0.5, 1, 1, 1, 0.5])
+  const cardRotate = useTransform(dragX, [-180, 180], [-18, 18])
+  const cardOpacity = useTransform(dragX, [-200, -100, 0, 100, 200], [0.6, 1, 1, 1, 0.6])
+  const nextCardScale = useTransform(dragX, [-150, 0, 150], [1, 0.94, 1])
 
-  const handleDragEnd = (event: any, info: any) => {
-    const swipeThreshold = 100
-    if (info.offset.x > swipeThreshold) {
-      // Swiped right: move top card to bottom
-      cycleStack()
-    } else if (info.offset.x < -swipeThreshold) {
-      // Swiped left: move top card to bottom
-      cycleStack()
-    }
+  const cycle = (dir?: 'left' | 'right') => {
+    setDirection(dir || 'right')
+    setTimeout(() => {
+      setCards(prev => {
+        const copy = [...prev]
+        const first = copy.shift()
+        if (first) copy.push(first)
+        return copy
+      })
+      setDirection(null)
+    }, 300)
   }
 
-  const cycleStack = () => {
-    setCards((prevCards) => {
-      const copy = [...prevCards]
-      const first = copy.shift()
-      if (first) {
-        copy.push(first)
-      }
-      return copy
-    })
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    if (Math.abs(info.offset.x) > 80) {
+      cycle(info.offset.x > 0 ? 'right' : 'left')
+    }
   }
 
   return (
     <section
       id="gallery"
-      className="relative min-h-[90vh] w-full flex flex-col items-center justify-center bg-luxury py-20 px-6 overflow-hidden border-b border-gold/10"
+      className="relative w-full overflow-hidden section-sep"
+      style={{
+        padding: 'var(--section-padding-y) var(--section-padding-x)',
+        background: 'linear-gradient(160deg, #faf6ea 0%, var(--background) 100%)'
+      }}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.02),transparent_70%)] pointer-events-none" />
-
-      {/* Header */}
-      <div className="text-center mb-12 relative z-10">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-widest text-maroon font-heading mb-3">
-          Moments of Love
-        </h2>
-        <p className="text-sm md:text-base font-subheading text-gold tracking-widest uppercase">
-          Click or Swipe to see our journey
-        </p>
-      </div>
-
-      {/* 3D Stack Container */}
+      {/* Ambient gold orb */}
       <div
-        className="relative w-[300px] h-[400px] md:w-[380px] md:h-[500px] flex items-center justify-center cursor-grab active:cursor-grabbing"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <AnimatePresence mode="popLayout">
-          {cards.map((card, index) => {
-            const isTop = index === 0
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 60% 50% at 50% 60%, rgba(201,168,76,0.04), transparent)'
+        }}
+      />
 
-            // 3D positioning layers
-            // Fanning out style when hovered on desktop to show there are cards behind
-            const fanOffset = isHovered ? (index * 12) : 0
-            const rotationOffset = isHovered ? (index * 4 - 6) : (index === 1 ? 3 : index === 2 ? -3 : index === 3 ? 5 : 0)
+      <div className="container-content relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+          className="text-center mb-14 md:mb-20"
+        >
+          <p className="text-label font-subheading text-gold tracking-[0.25em] mb-4">
+            ✦ &nbsp; Photo Gallery &nbsp; ✦
+          </p>
+          <h2 className="text-section-title font-heading font-bold text-maroon">
+            Moments of Love
+          </h2>
+          <div className="gold-line w-24 mx-auto mt-5" />
+          <p className="text-sm md:text-base font-subheading text-maroon/50 tracking-wider mt-4 italic">
+            Tap the photo or swipe to explore
+          </p>
+        </motion.div>
 
-            return (
-              <motion.div
-                key={card.id}
-                style={isTop ? { x: dragX, rotate: rotateTransform, opacity: opacityTransform } : {}}
-                drag={isTop ? 'x' : false}
-                dragConstraints={{ left: 0, right: 0 }}
-                onDragEnd={isTop ? handleDragEnd : undefined}
-                onTap={isTop ? cycleStack : undefined}
-                animate={{
-                  scale: 1 - index * 0.05,
-                  y: index * 16 - fanOffset,
-                  rotate: rotationOffset,
-                  zIndex: 40 - index,
-                }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 300,
-                  damping: 25
-                }}
-                className="absolute w-full h-full rounded-2xl overflow-hidden glass-card shadow-2xl origin-bottom select-none border border-gold/30 cursor-pointer"
-              >
-                {/* Image layout */}
-                <div className="relative w-full h-[78%]">
-                  <Image
-                    src={card.src}
-                    alt={card.title}
-                    fill
-                    sizes="(max-width: 768px) 300px, 380px"
-                    priority={isTop}
-                    className="object-cover pointer-events-none"
-                  />
-                  {/* Subtle vignette layer */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+        {/* Card Stack Layout */}
+        <div className="flex flex-col items-center">
+          {/* 3D Stack */}
+          <div
+            className="relative cursor-grab active:cursor-grabbing"
+            style={{ width: 'min(320px, 85vw)', height: 'min(430px, 110vw)' }}
+          >
+            <AnimatePresence mode="popLayout">
+              {cards.slice(0, 4).map((card, index) => {
+                const isTop = index === 0
+                const zIndex = 30 - index * 5
 
-                  {/* Caption on the image itself */}
-                  <div className="absolute bottom-4 left-4 right-4 z-20 text-[#FFFDF7]">
-                    <h3 className="text-xl md:text-2xl font-subheading font-medium tracking-wide">
-                      {card.title}
-                    </h3>
-                  </div>
-                </div>
+                // Layering offsets
+                const yOffset = index * 14
+                const scaleDown = 1 - index * 0.055
+                const rotateResting = [0, 3, -4, 5][index] ?? 0
 
-                {/* Card footer description */}
-                <div className="h-[22%] bg-gradient-to-b from-[#4d0b17] to-maroon px-4 py-3 flex flex-col justify-center border-t border-gold/20 text-center">
-                  <p className="text-sm md:text-base font-subheading text-gold-soft tracking-wider italic">
-                    {card.desc}
-                  </p>
-                </div>
-              </motion.div>
-            )
-          })}
-        </AnimatePresence>
-      </div>
+                return (
+                  <motion.div
+                    key={card.id}
+                    style={{
+                      zIndex,
+                      x: isTop ? dragX : 0,
+                      rotate: isTop ? cardRotate : rotateResting,
+                      opacity: isTop ? cardOpacity : 1,
+                    }}
+                    animate={{
+                      y: yOffset,
+                      scale: isTop ? 1 : scaleDown,
+                    }}
+                    drag={isTop ? 'x' : false}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.7}
+                    onDragEnd={isTop ? handleDragEnd : undefined}
+                    onTap={isTop ? () => cycle() : undefined}
+                    transition={{ type: 'spring', stiffness: 260, damping: 26 }}
+                    className="absolute inset-0 rounded-3xl overflow-hidden select-none shadow-2xl border border-white/40"
+                  >
+                    {/* Photo */}
+                    <div className="relative w-full h-[78%]">
+                      <Image
+                        src={card.src}
+                        alt={card.name}
+                        fill sizes="320px"
+                        priority={isTop}
+                        className="object-cover pointer-events-none"
+                      />
+                      {/* Vignette */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
 
-      {/* Slide Navigation dot Indicators for the stack */}
-      <div className="flex space-x-2 mt-8 z-10">
-        {INITIAL_CARDS.map((item, idx) => {
-          // Highlight dot based on which card is top
-          const isActive = cards[0]?.id === item.id
-          return (
+                      {/* Name badge on image */}
+                      <div className="absolute bottom-4 left-5 right-5">
+                        <h3 className="text-2xl md:text-3xl font-heading font-bold text-white tracking-widest drop-shadow-lg">
+                          {card.name}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Card footer */}
+                    <div
+                      className="h-[22%] flex items-center justify-between px-5"
+                      style={{
+                        background: 'linear-gradient(135deg, #4a0c18 0%, #6B1022 100%)'
+                      }}
+                    >
+                      <div>
+                        <p className="text-label text-gold-soft/70 tracking-[0.18em]">
+                          {card.subtitle}
+                        </p>
+                        <p className="font-subheading text-white/80 text-sm italic mt-0.5">
+                          Ring Ceremony 2026
+                        </p>
+                      </div>
+                      {/* Small heart */}
+                      <span className="text-gold text-xl">♥</span>
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation dots */}
+          <div className="flex items-center gap-3 mt-14">
+            {CARDS.map((card) => {
+              const isActive = cards[0]?.id === card.id
+              return (
+                <button
+                  key={card.id}
+                  onClick={() => {
+                    setCards(prev => {
+                      const copy = [...prev]
+                      while (copy[0].id !== card.id) {
+                        const first = copy.shift()
+                        if (first) copy.push(first)
+                      }
+                      return copy
+                    })
+                  }}
+                  className={`rounded-full transition-all duration-400 cursor-pointer
+                    ${isActive
+                      ? 'w-7 h-2.5 bg-gold shadow-[0_0_8px_rgba(201,168,76,0.6)]'
+                      : 'w-2.5 h-2.5 bg-gold/25 hover:bg-gold/50'
+                    }`}
+                />
+              )
+            })}
+          </div>
+
+          {/* Swipe hint arrows */}
+          <div className="flex items-center gap-8 mt-6">
             <button
-              key={item.id}
-              onClick={() => {
-                // Rotate cards until the clicked card is at the top
-                setCards((prevCards) => {
-                  const copy = [...prevCards]
-                  while (copy[0].id !== item.id) {
-                    const first = copy.shift()
-                    if (first) copy.push(first)
-                  }
-                  return copy
-                })
-              }}
-              className={`h-2 rounded-full transition-all duration-300 ${isActive ? 'w-6 bg-gold' : 'w-2 bg-gold/30 hover:bg-gold/65'
-                } cursor-pointer`}
-            />
-          )
-        })}
+              onClick={() => cycle('left')}
+              className="w-10 h-10 rounded-full border border-gold/20 flex items-center justify-center
+                text-gold/40 hover:text-gold hover:border-gold/50 hover:bg-gold/5
+                transition-all duration-300 cursor-pointer font-subheading text-lg"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => cycle('right')}
+              className="w-10 h-10 rounded-full border border-gold/20 flex items-center justify-center
+                text-gold/40 hover:text-gold hover:border-gold/50 hover:bg-gold/5
+                transition-all duration-300 cursor-pointer font-subheading text-lg"
+            >
+              →
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   )
