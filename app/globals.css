@@ -7,7 +7,9 @@
   --primary-maroon: #6B1022;
   --primary-gold: #D4AF37;
   --soft-gold: #E8D8A8;
-  
+  --glass-bg: rgba(107, 16, 34, 0.04);
+  --glass-bg-dark: rgba(107, 16, 34, 0.85);
+
   --font-cinzel: "Cinzel", serif;
   --font-cormorant: "Cormorant Garamond", serif;
   --font-inter: "Inter", sans-serif;
@@ -40,52 +42,64 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter);
-  font-size: 18px; /* Mobile UX rule: minimum body font size is 18px */
+  font-size: 18px;
+  /* Mobile UX rule: minimum body font size is 18px */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #FFFDF7;
+  background: var(--background);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--primary-maroon);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-gold);
 }
 
 /* Typography Helpers */
-h1, h2, h3, .font-heading {
+h1,
+h2,
+h3,
+.font-heading {
   font-family: var(--font-cinzel);
   letter-spacing: 0.1em;
 }
 
-h4, h5, .font-subheading {
+h4,
+h5,
+.font-subheading {
   font-family: var(--font-cormorant);
   letter-spacing: 0.05em;
 }
 
 /* Luxury Card Glassmorphism */
 .glass-card {
-  background: rgba(107, 16, 34, 0.04);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(212, 175, 55, 0.2);
   box-shadow: 0 8px 32px 0 rgba(107, 16, 34, 0.05);
+  transition: background 0.5s ease, border-color 0.5s ease;
 }
 
 .glass-card-dark {
-  background: rgba(107, 16, 34, 0.85);
+  background: var(--glass-bg-dark);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(212, 175, 55, 0.35);
   box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+  transition: background 0.5s ease, border-color 0.5s ease;
 }
 
 /* Gold Text Shimmer Effect */
@@ -93,20 +107,19 @@ h4, h5, .font-subheading {
   0% {
     background-position: -200% center;
   }
+
   100% {
     background-position: 200% center;
   }
 }
 
 .gold-shimmer-text {
-  background: linear-gradient(
-    to right,
-    #D4AF37 0%,
-    #FFFDF7 25%,
-    #E8D8A8 50%,
-    #D4AF37 75%,
-    #6B1022 100%
-  );
+  background: linear-gradient(to right,
+      var(--primary-gold) 0%,
+      var(--background) 25%,
+      var(--soft-gold) 50%,
+      var(--primary-gold) 75%,
+      var(--primary-maroon) 100%);
   background-size: 200% auto;
   color: transparent;
   -webkit-background-clip: text;
@@ -116,9 +129,12 @@ h4, h5, .font-subheading {
 
 /* Custom Animation Utilities */
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   50% {
     transform: translateY(-10px) rotate(3deg);
   }

@@ -103,7 +103,7 @@ export default function PhotoGallery() {
           Moments of Love
         </h2>
         <p className="text-sm md:text-base font-subheading text-gold tracking-widest uppercase">
-          Drag / Swipe to see our journey
+          Click or Swipe to see our journey
         </p>
       </div>
 
@@ -129,6 +129,7 @@ export default function PhotoGallery() {
                 drag={isTop ? 'x' : false}
                 dragConstraints={{ left: 0, right: 0 }}
                 onDragEnd={isTop ? handleDragEnd : undefined}
+                onTap={isTop ? cycleStack : undefined}
                 animate={{
                   scale: 1 - index * 0.05,
                   y: index * 16 - fanOffset,
@@ -140,7 +141,7 @@ export default function PhotoGallery() {
                   stiffness: 300,
                   damping: 25
                 }}
-                className="absolute w-full h-full rounded-2xl overflow-hidden glass-card shadow-2xl origin-bottom select-none border border-gold/30"
+                className="absolute w-full h-full rounded-2xl overflow-hidden glass-card shadow-2xl origin-bottom select-none border border-gold/30 cursor-pointer"
               >
                 {/* Image layout */}
                 <div className="relative w-full h-[78%]">

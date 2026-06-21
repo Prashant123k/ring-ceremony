@@ -20,7 +20,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
     // Stage 2: Automatically complete loading after 3.2s
     const completeTimer = setTimeout(() => {
       handleComplete()
-    }, 4000)
+    }, 3850)
 
     return () => {
       clearTimeout(textTimer)

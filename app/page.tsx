@@ -22,7 +22,7 @@ export default function Home() {
     <>
       {/* 1. Luxury Loader Screen */}
       <IntroLoader onComplete={() => setIsLoading(false)} />
-      
+
       {/* Main Single Page Content (Loads only after loader finishes for proper motion timing) */}
       {!isLoading && (
         <div className="flex flex-col min-h-screen relative">
